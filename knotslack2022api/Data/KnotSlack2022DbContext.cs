@@ -13,5 +13,6 @@ namespace Knotslack2022api.Data
 
         public DbSet<Message> Messages { get; set; }
         public DbSet<KSUser> KSUsers { get; set; }
+        public DbSet<Role> Roles { get; set; }
     }
 }
