@@ -14,6 +14,16 @@ builder.Services.AddDbContext<KnotSlack2022DbContext>(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<KnotSlack2022DbContext>();
+    //context.Database.EnsureCreated();
+    //Console.WriteLine(context.Database.EnsureCreated());
+    // DbInitializer.Initialize(context);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -22,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

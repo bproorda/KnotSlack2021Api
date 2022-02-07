@@ -19,6 +19,8 @@ namespace knotslack2022api.Models
 
         public DateTime Date { get; set; }
 
+        public int? ReplyId { get; set; }
+
         [MaxLength]
         public string? Content { get; set; }
 
