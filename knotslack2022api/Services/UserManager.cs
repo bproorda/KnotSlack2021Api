@@ -1,9 +1,15 @@
 ﻿using knotslack2022api.Models.Identity;
+using knotslack2022api.Models.Identity.DTO;
 using Knotslack2022api.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace knotslack2022api.Services
-{
+{ //TODO: update metods, especially ones concerning roles
     public class UserManager : IUserManager
     {
         private readonly UserManager<KSUser> userManager;
@@ -70,34 +76,62 @@ namespace knotslack2022api.Services
             return result;
         }
 
-        public Task<string> CreateToken(KSUser user)
+        public async Task<string> CreateToken(KSUser user)
         {
-            throw new NotImplementedException();
+            var secret = configuration["JWTSecret"];
+            var secretBytes = Encoding.UTF8.GetBytes(secret);
+            var signingKey = new SymmetricSecurityKey(secretBytes);
+            var roles = (List<string>)await userManager.GetRolesAsync(user);
+
+            var tokenClaims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim("UserId", user.Id),
+                new Claim(ClaimTypes.Role, roles[0]),
+            };
+
+            var token = new JwtSecurityToken(
+                expires: DateTime.UtcNow.AddSeconds(36000),
+                claims: tokenClaims,
+                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return tokenString;
         }
 
-        public Task<KSUser> FindAllLoggedInUsers()
+        public async Task<List<KSUserDTO>> FindAllLoggedInUsers()
         {
-            throw new NotImplementedException();
+            var loggedInUsers = await _context.KSUsers
+                .Where(u => u.LoggedIn).Select(u => 
+                new KSUserDTO
+                {
+                    UserName = u.UserName,
+                }
+                ).ToListAsync();
+            return loggedInUsers;
         }
 
-        public Task<KSUser> FindByIdAsync(string userId)
+        public async Task<KSUser> FindByIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            return await userManager.FindByIdAsync(userId);
         }
 
         public Task<KSUser> FindByNameAsync(string username)
         {
-            throw new NotImplementedException();
+            return userManager.FindByNameAsync(username);
         }
 
-        public Task<IList<string>> GetUserRoles(KSUser user)
+        public async Task<IList<string>> GetUserRoles(KSUser user)
         {
-            throw new NotImplementedException();
+            var thisUser = await FindByNameAsync(user.UserName);
+            return await userManager.GetRolesAsync(thisUser);
         }
 
-        public Task<bool> IsUserAdmin(KSUser user)
+        public async Task<bool> IsUserAdmin(KSUser user)
         {
-            throw new NotImplementedException();
+            return await userManager.IsInRoleAsync(user, "admin");
         }
     }
 }

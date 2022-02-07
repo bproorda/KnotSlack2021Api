@@ -1,4 +1,5 @@
 ﻿using knotslack2022api.Models.Identity;
+using knotslack2022api.Models.Identity.DTO;
 using Microsoft.AspNetCore.Identity;
 
 namespace knotslack2022api.Services
@@ -13,7 +14,7 @@ namespace knotslack2022api.Services
         Task<bool> IsUserAdmin(KSUser user);
         Task<IList<string>> GetUserRoles(KSUser user);
         Task<KSUser> FindByIdAsync(string userId);
-        Task<KSUser> FindAllLoggedInUsers();
+        Task<List<KSUserDTO>> FindAllLoggedInUsers();
         //Task<IdentityResult> UpdateAsync(KSUser user);
         //Task<IdentityResult> DeleteUser(string username);
         //Task<UserWithToken> CreateUserWithToken(KSUser user);
