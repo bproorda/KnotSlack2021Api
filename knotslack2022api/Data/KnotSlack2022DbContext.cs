@@ -1,4 +1,5 @@
 ﻿using knotslack2022api.Models;
+using knotslack2022api.Models.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Knotslack2022api.Data
@@ -11,5 +12,6 @@ namespace Knotslack2022api.Data
         }
 
         public DbSet<Message> Messages { get; set; }
+        public DbSet<KSUser> KSUsers { get; set; }
     }
 }
