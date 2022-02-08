@@ -10,7 +10,6 @@ namespace knotslack2022api.Models.Identity
 
         public string? ConnectionId { get; set; }
 
-        public Role Role { get; set; }
 
         // Nav Prop for Many to Many/One to Many Relationships
         //public List<UserChannel> UserChannels { get; set; }
