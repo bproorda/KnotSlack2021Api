@@ -22,11 +22,10 @@ builder.Services.AddDbContext<KnotSlack2022DbContext>(options =>
 builder.Services.AddMemoryCache();
 
 // For Identity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<KSUser, IdentityRole>()
     .AddEntityFrameworkStores<KnotSlack2022DbContext>()
     .AddDefaultTokenProviders();
-//builder.Services.AddTransient<IUserManager, UserManager>();
-builder.Services.AddSingleton<IGreeterService, GreeterService>();
+builder.Services.AddTransient<IUserManager, UserManager>();
 
 // Adding Authentication
 builder.Services.AddAuthentication(options =>
