@@ -57,8 +57,9 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
 
     var context = services.GetRequiredService<KnotSlack2022DbContext>();
+    var userManagerService = services.GetRequiredService<IUserManager>();
     context.Database.EnsureCreated();
-    DbInitializer.Initialize(context);
+    DbInitializer.Initialize(context, userManagerService);
 }
 
 // Configure the HTTP request pipeline.
