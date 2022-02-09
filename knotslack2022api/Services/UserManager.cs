@@ -1,5 +1,6 @@
 ﻿
 using knotslack2022api.Models.Identity;
+using knotslack2022api.Models.Identity.DTO;
 using Knotslack2022api.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -91,6 +92,31 @@ namespace knotslack2022api.Services
             adminRole.Name = "admin";
             await _roleManager.CreateAsync(userRole);
             await _roleManager.CreateAsync(adminRole); 
+        }
+
+        public async Task<bool> AdminCheckAsync()
+        {
+            var admins = await _userManager.GetUsersInRoleAsync("admin");
+
+            if (admins.Count() == 0)
+            {
+                return false;
+            } else
+            {
+                return true;
+            }
+        }
+
+        public async Task<UserWithToken> CreateUserWithToken(KSUser user)
+        {
+            return new UserWithToken
+            {
+                UserId = user.UserName,
+                Token = await CreateToken(user),
+                //Channels = await GetUserChannels(user),
+                //Roles = (List<string>)await GetUserRoles(user),
+                LastVisited = DateTime.Now,
+            };
         }
     }
 }
