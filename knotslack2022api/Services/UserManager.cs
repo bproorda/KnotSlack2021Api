@@ -118,5 +118,10 @@ namespace knotslack2022api.Services
                 LastVisited = DateTime.Now,
             };
         }
+
+        public Task AccessFailedAsync(KSUser user)
+        {
+            return _userManager.AccessFailedAsync(user);
+        }
     }
 }

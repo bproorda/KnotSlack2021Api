@@ -60,5 +60,48 @@ namespace knotslack2022api.Controllers
             }
         }
 
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginData login)
+        {
+            var user = await _userManager.FindByNameAsync(login.UserName);
+
+            if (user != null)
+            {
+                var result = await _userManager.CheckPasswordAsync(user, login.Password);
+                if (result)
+                {
+                    user.LoggedIn = true;
+                    await _userManager.UpdateAsync(user);
+
+                    //await chatHub.SendUpdatedUser(user.UserName, user.LoggedIn);
+
+                    return Ok(await _userManager.CreateUserWithToken(user));
+                }
+
+                await _userManager.AccessFailedAsync(user);
+            }
+            return Unauthorized();
+        }
+
+        //[Authorize]
+        //To update LoggedIn prop in db
+        [HttpPost("Logout")]
+        public async Task<string> Logout(KSUserDTO userInfo)
+        {
+            var user = await _userManager.FindByNameAsync(userInfo.UserName);
+            if (user != null)
+            {
+                user.LoggedIn = false;
+                await _userManager.UpdateAsync(user);
+
+                //comment out if using postman
+                //await chatHub.SendUpdatedUser(user.UserName, user.LoggedIn);
+                //await chatHub.UpdateLastVisited(user.UserName);
+                return user.UserName;
+
+            }
+            return "User Not Found";
+        }
+
     }
 }

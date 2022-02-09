@@ -15,5 +15,6 @@ namespace knotslack2022api.Services
         Task InitializeRolesAsync();
         Task<bool> AdminCheckAsync();
         Task<UserWithToken> CreateUserWithToken(KSUser user);
+        Task AccessFailedAsync(KSUser user);
     }
 }
